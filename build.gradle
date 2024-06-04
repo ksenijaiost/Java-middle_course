@@ -1,0 +1,74 @@
+plugins {
+    id("java")
+}
+
+group = "org.example"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    implementation("com.google.guava:guava:32.1.2-jre")
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+//Занятие 2 - Сборщик проектов Gradle
+task createSchema //Задача на создание базы
+task loadTestData { //Определяем задачу, связанную с задачей на создание базы
+    dependsOn createSchema {
+        println "created schema"
+    }
+    doLast {
+        println "LoadedTestData"
+    }
+}
+//Опрелеляем последовательность выполнения команды в задаче - выбираем первую команду
+loadTestData.doFirst {
+    println "Started loading test data"
+}
+//Задача с условным свойством. Запуск из консоли с разными аргументами:
+// 1) gradle myTask -Pcondition=false
+// 2) gradle myTask -Pcondition=true
+task myTask {
+    def condition = project.hasProperty('condition') ? project.getProperty('condition') : 'true'
+    onlyIf {
+        return condition.toBoolean()
+    }
+    doLast {
+        println "Task is executing"
+    }
+    //Пример, где устанавливается свойство задачи. Определяется значение didWork задачи DefaultTask.
+    task firstTask {
+        doLast {
+            println "First task is executing"
+            didWork = true //Указываем, что задача выполнила поставленную цель
+        }
+    }
+    task secondTask {
+        doLast {
+            if (project.hasProperty('skipSecondTask') && project.skipSecondTask.toBoolean()) {
+                println "Second task is skipped..."
+                didWork = false
+            } else {
+                println "Second task is executed"
+                didWork = true
+            }
+        }
+    }
+    task thirdTask (dependsOn: "secondTask") {
+        doLast {
+            if (secondTask.didWork) {
+                println "Task 3 is joined"
+            } else {
+                println "Task 3 is not joined"
+            }
+        }
+    }
+}
