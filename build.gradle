@@ -19,7 +19,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-//Занятие 2 - Сборщик проектов Gradle
+//Занятие 2.1 - Сборщик проектов Gradle
 task createSchema //Задача на создание базы
 task loadTestData { //Определяем задачу, связанную с задачей на создание базы
     dependsOn createSchema {
@@ -62,7 +62,7 @@ task myTask {
             }
         }
     }
-    task thirdTask (dependsOn: "secondTask") {
+    task thirdTask(dependsOn: "secondTask") {
         doLast {
             if (secondTask.didWork) {
                 println "Task 3 is joined"
@@ -72,3 +72,16 @@ task myTask {
         }
     }
 }
+
+//Занятие 2.1 - Создание плагинов Gradle
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.task('hello') {
+            doLast {
+                println "Hello form buildscript plugin"
+            }
+        }
+    }
+}
+apply plugin: GreetingPlugin
+apply from: 'GreetingScriptPlugin.gradle'
