@@ -2,7 +2,6 @@ package Les1;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.random.RandomGenerator;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +10,7 @@ public class Main {
         ArrayList<Integer> arrayList = new ArrayList<>();
         var randomInt = new Random().nextInt();
         for (int i = 1; i <= randomInt; i++) {
-           arrayList.add(i);
+            arrayList.add(i);
         }
         System.out.println("\nThe array list contains " + arrayList.size() + " elements");
     }
